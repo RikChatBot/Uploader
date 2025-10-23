@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Deploy Elegant</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <style>
+    /* --- RESET & BASE --- */
+    * { box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: all 0.3s ease; }
+    body {
+      margin: 0;
+      background: #f9fafb;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* --- SPLASH SCREEN --- */
+    #splash {
+      position: fixed;
+      inset: 0;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      animation: fadeOut 2s ease 3.5s forwards;
+    }
+
+    #splash i {
+      font-size: 3em;
+      color: #007bff;
+      animation: bounce 1.5s ease infinite;
+    }
+
+    #splash h1 {
+      margin-top: 0.7em;
+      font-size: 1.6em;
+      font-weight: 600;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes fadeOut {
+      to { opacity: 0; visibility: hidden; }
+    }
+
+    /* --- ONBOARDING --- */
+    #onboarding {
+      position: fixed;
+      inset: 0;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      z-index: 15;
+      animation: fadeOut 1.5s ease 8s forwards;
+    }
+
+    .slide {
+      display: none;
+      animation: fadeIn 0.8s ease;
+    }
+    .slide.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide i {
+      font-size: 2.5em;
+      color: #007bff;
+      margin-bottom: 0.6em;
+    }
+
+    .slide h2 {
+      margin: 0.3em 0;
+      font-weight: 600;
+    }
+
+    .dots {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 1em;
+    }
+
+    .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #ddd;
+    }
+
+    .dot.active { background: #007bff; }
+
+    /* --- HEADER --- */
+    header {
+      text-align: center;
+      padding: 1em;
+      font-size: 1.3em;
+      font-weight: 600;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      position: relative;
+      z-index: 5;
+    }
+
+    /* --- MAIN CONTENT --- */
+    main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1em;
+      text-align: center;
+    }
+
+    .card {
+      background: white;
+      max-width: 420px;
+      margin: 0 auto;
+      padding: 1.2em;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    input, button {
+      width: 100%;
+      padding: 0.9em;
+      margin: 0.5em 0;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      outline: none;
+      font-size: 1em;
+      background: #fafafa;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      box-shadow: 0 3px 6px rgba(0,123,255,0.2);
+    }
+
+    button:hover {
+      background-color: #0063d9;
+      transform: translateY(-1px);
+    }
+
+    #log {
+      text-align: left;
+      background: #f4f4f4;
+      border-radius: 10px;
+      padding: 1em;
+      margin-top: 1em;
+      font-family: monospace;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    /* --- NAVIGATION --- */
+    nav {
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid #eee;
+      background: white;
+      padding: 0.6em 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      box-shadow: 0 -3px 6px rgba(0,0,0,0.05);
+    }
+
+    nav button {
+      background: none;
+      border: none;
+      color: #555;
+      font-size: 0.9em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    nav button i {
+      font-size: 1.3em;
+      margin-bottom: 0.2em;
+    }
+
+    nav button.active {
+      color: #007bff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Splash -->
+  <div id="splash">
+    <i class="fa-solid fa-rocket"></i>
+    <h1>Auto Deploy</h1>
+  </div>
+
+  <!-- Onboarding -->
+  <div id="onboarding">
+    <div class="slide active">
+      <i class="fa-solid fa-cloud-arrow-up"></i>
+      <h2>Upload Mudah</h2>
+      <p>Unggah file atau folder langsung ke GitHub dengan satu klik.</p>
+    </div>
+    <div class="slide">
+      <i class="fa-solid fa-lock"></i>
+      <h2>Token Aman</h2>
+      <p>Kami tidak menyimpan token — semua berjalan lokal di browser kamu.</p>
+    </div>
+    <div class="slide">
+      <i class="fa-solid fa-code-branch"></i>
+      <h2>Deploy Instan</h2>
+      <p>Commit otomatis dan aktifkan GitHub Pages kapan pun kamu mau.</p>
+    </div>
+    <div class="dots">
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header><i class="fa-solid fa-upload"></i> Upload ke GitHub</header>
+
+  <!-- Main content -->
+  <main>
+    <div class="card">
+      <input id="username" placeholder="GitHub Username">
+      <input id="repo" placeholder="Repository Name">
+      <input id="token" type="password" placeholder="Personal Access Token (PAT)">
+      <input id="path" placeholder="Path tujuan (misal: folder/file.txt)">
+      <input id="file" type="file" webkitdirectory directory multiple>
+      <button id="uploadBtn"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Sekarang</button>
+      <div id="log"></div>
+    </div>
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav>
+    <button class="active"><i class="fa-solid fa-house"></i>Home</button>
+    <button><i class="fa-solid fa-upload"></i>Upload</button>
+    <button><i class="fa-solid fa-circle-info"></i>About</button>
+  </nav>
+
+  <script>
+    // --- ONBOARDING SLIDES ---
+    let slideIndex = 0;
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+
+    setInterval(() => {
+      slides[slideIndex].classList.remove('active');
+      dots[slideIndex].classList.remove('active');
+      slideIndex = (slideIndex + 1) % slides.length;
+      slides[slideIndex].classList.add('active');
+      dots[slideIndex].classList.add('active');
+    }, 2500);
+
+    // --- GITHUB UPLOAD ---
+    async function uploadToGitHub(filePath, content, username, repo, token) {
+      const base64 = btoa(unescape(encodeURIComponent(content)));
+      const url = `https://api.github.com/repos/${username}/${repo}/contents/${filePath}`;
+
+      const res = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Accept": "application/vnd.github+json",
+          "X-GitHub-Api-Version": "2022-11-28",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: `Upload ${filePath}`,
+          content: base64
+        })
+      });
+
+      return res.json();
+    }
+
+    async function uploadFile() {
+      const username = document.getElementById("username").value.trim();
+      const repo = document.getElementById("repo").value.trim();
+      const token = document.getElementById("token").value.trim();
+      const basePath = document.getElementById("path").value.trim();
+      const files = document.getElementById("file").files;
+      const log = document.getElementById("log");
+
+      if (!username || !repo || !token || files.length === 0) {
+        alert("Lengkapi semua kolom dan pilih file/folder!");
+        return;
+      }
+
+      log.innerText = "🚀 Mulai upload...\n";
+      for (const file of files) {
+        const path = basePath ? `${basePath}/${file.webkitRelativePath || file.name}` : (file.webkitRelativePath || file.name);
+        const content = await file.text();
+        log.innerText += `⏳ Uploading ${path}...\n`;
+
+        const result = await uploadToGitHub(path, content, username, repo, token);
+        if (result.content) {
+          log.innerText += `✅ Sukses: ${result.content.path}\n`;
+        } else {
+          log.innerText += `❌ Gagal: ${result.message}\n`;
+        }
+      }
+
+      log.innerText += "\n✨ Upload selesai!";
+    }
+
+    document.getElementById("uploadBtn").addEventListener("click", uploadFile);
+  </script>
+</body>
+</html>
