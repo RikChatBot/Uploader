@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AutoDeploy by Thoriq</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<style>
+:root {
+  --primary: #2f80ed;
+  --primary-light: #56a3ff;
+  --bg: #f6f8fc;
+  --card: #ffffff;
+  --text: #222;
+  --radius: 18px;
+  --shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+* { box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: .3s; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header */
+header {
+  text-align: center;
+  padding: 1em;
+  font-size: 1.2em;
+  font-weight: 600;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  z-index: 5;
+  position: sticky;
+  top: 0;
+}
+
+/* Main */
+main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.2em;
+}
+
+/* Card */
+.card {
+  background: var(--card);
+  max-width: 480px;
+  margin: 0 auto 1.5em;
+  padding: 1.5em;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* Inputs */
+.input-group {
+  position: relative;
+  margin-bottom: 1em;
+}
+.input-group i {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #888;
+}
+.input-group input {
+  width: 100%;
+  padding: 0.9em 0.9em 0.9em 2.5em;
+  border-radius: 12px;
+  border: 1px solid #e1e4ea;
+  background: #f9fafb;
+  font-size: 1em;
+}
+.input-group input:focus {
+  border-color: var(--primary);
+  background: #fff;
+}
+
+/* Buttons */
+.file-custom, button.primary, button.secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  border-radius: 12px;
+  padding: 0.9em 1em;
+  font-weight: 600;
+  font-size: 1em;
+  cursor: pointer;
+  transition: all .3s;
+  text-align: center;
+}
+
+.file-custom {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  box-shadow: 0 3px 10px rgba(47,128,237,0.3);
+  margin-bottom: 0.8em;
+}
+.file-custom:hover { background: var(--primary-light); transform: translateY(-2px); }
+
+button.primary {
+  background: var(--primary);
+  border: none;
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(47,128,237,0.3);
+  margin-bottom: 0.8em;
+}
+button.primary:hover { background: var(--primary-light); }
+
+button.secondary {
+  background: none;
+  border: 1.5px solid var(--primary);
+  color: var(--primary);
+  margin-top: 0.8em;
+}
+button.secondary:hover {
+  background: var(--primary-light);
+  color: #fff;
+}
+
+/* Log */
+#log {
+  background: #f3f6fa;
+  border-radius: 12px;
+  padding: 0.8em;
+  font-family: monospace;
+  max-height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  margin-top: 1em;
+  font-size: 0.9em;
+}
+progress {
+  width: 100%;
+  height: 6px;
+  margin-top: 0.4em;
+  border-radius: 10px;
+  appearance: none;
+}
+progress::-webkit-progress-bar { background: #e0e6ef; border-radius: 10px;}
+progress::-webkit-progress-value { background: var(--primary); border-radius: 10px;}
+
+/* Navigation */
+nav {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border-radius: 30px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  display: flex;
+  justify-content: space-around;
+  width: 90%;
+  max-width: 480px;
+  padding: 0.4em 0;
+  z-index: 10;
+}
+nav button {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 0.85em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+nav button i { font-size: 1.4em; margin-bottom: 0.2em; }
+nav button.active { color: var(--primary); }
+
+/* News section */
+.news {
+  margin-top: 1.2em;
+}
+.news h4 {
+  margin-bottom: 0.8em;
+  font-weight: 600;
+}
+.news-item {
+  background: #f9fafb;
+  border-radius: 14px;
+  padding: 1em 1.2em;
+  margin-bottom: 0.9em;
+  border: 1px solid #e1e4ea;
+}
+.news-item h5 {
+  margin: 0 0 0.3em 0;
+  color: var(--primary);
+  font-weight: 600;
+}
+.news-item p {
+  margin: 0;
+  font-size: 0.9em;
+  color: #555;
+}
+
+/* About section */
+.about {
+  text-align: center;
+}
+.about img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 1em;
+  object-fit: cover;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+
+/* Misc */
+.hidden { display: none; }
+a.link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+a.link:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header><i class="fa-solid fa-cloud-arrow-up"></i> AutoDeploy</header>
+
+<main>
+  <section id="home" class="card">
+    <h3>Hai, <b>Developer!</b></h3>
+    <p>Aplikasi ini dikembangkan oleh <b>Thoriq Ichsani</b> untuk mempermudah upload & deploy ke GitHub Pages.</p>
+    <div class="news">
+      <h4><i class="fa-solid fa-newspaper"></i> Berita dari Pengembang</h4>
+      <div class="news-item">
+        <h5>✨ Update UI 2.1</h5>
+        <p>Tampilan baru yang lebih clean, tombol rapi, dan navigasi bawah yang elegan.</p>
+      </div>
+      <div class="news-item">
+        <h5>🚀 Fitur Deploy Langsung</h5>
+        <p>Kini kamu bisa aktifkan GitHub Pages langsung dari aplikasi ini.</p>
+      </div>
+      <div class="news-item">
+        <h5>🛠️ Coming Soon</h5>
+        <p>Dark mode & integrasi multi-repo akan hadir dalam update berikutnya.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="upload" class="card hidden">
+    <div class="input-group"><i class="fa-solid fa-user"></i><input id="username" placeholder="GitHub Username"></div>
+    <div class="input-group"><i class="fa-solid fa-book"></i><input id="repo" placeholder="Repository Name"></div>
+    <div class="input-group"><i class="fa-solid fa-key"></i><input id="token" type="password" placeholder="Personal Access Token (PAT)"></div>
+    <div class="input-group"><i class="fa-solid fa-folder"></i><input id="path" placeholder="Path (misal: folder/file.txt)"></div>
+
+    <label class="file-custom" for="file"><i class="fa-solid fa-folder-open"></i> Pilih File / Folder</label>
+    <input id="file" type="file" webkitdirectory directory multiple hidden>
+
+    <button class="primary" id="uploadBtn"><i class="fa-solid fa-cloud-arrow-up"></i> Upload</button>
+
+    <div id="progressBars"></div>
+    <div id="log"></div>
+    <button class="secondary hidden" id="deployBtn"><i class="fa-solid fa-globe"></i> Deploy ke GitHub Pages</button>
+    <div id="previewURL"></div>
+  </section>
+
+  <section id="about" class="card hidden about">
+    <img src="https://i.imgur.com/0y0y0y0.png" alt="Foto Thoriq" onerror="this.style.display='none'">
+    <h3>Thoriq Ichsani</h3>
+    <p>Umur: 20 tahun</p>
+    <p>Pengembang muda yang gemar bereksperimen dengan teknologi web dan otomasi.</p>
+    <p><i class="fa-brands fa-github"></i> @thoriqichsani</p>
+  </section>
+</main>
+
+<nav>
+  <button class="active" data-tab="home"><i class="fa-solid fa-house"></i>Home</button>
+  <button data-tab="upload"><i class="fa-solid fa-upload"></i>Upload</button>
+  <button data-tab="about"><i class="fa-solid fa-user"></i>About</button>
+</nav>
+
+<script>
+// Navigation
+const tabs=document.querySelectorAll("nav button");
+const sections=document.querySelectorAll("main section");
+tabs.forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    tabs.forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    sections.forEach(sec=>sec.classList.add("hidden"));
+    document.getElementById(btn.dataset.tab).classList.remove("hidden");
+  });
+});
+
+// Upload function
+async function uploadToGitHub(filePath,content,username,repo,token){
+  const base64=btoa(unescape(encodeURIComponent(content)));
+  const url=`https://api.github.com/repos/${username}/${repo}/contents/${filePath}`;
+  const res=await fetch(url,{
+    method:"PUT",
+    headers:{
+      "Authorization":`Bearer ${token}`,
+      "Accept":"application/vnd.github+json",
+      "X-GitHub-Api-Version":"2022-11-28",
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({message:`Upload ${filePath}`,content:base64})
+  });
+  return res.json();
+}
+
+async function uploadFile(){
+  const username=document.getElementById("username").value.trim();
+  const repo=document.getElementById("repo").value.trim();
+  const token=document.getElementById("token").value.trim();
+  const basePath=document.getElementById("path").value.trim();
+  const files=document.getElementById("file").files;
+  const log=document.getElementById("log");
+  const progressBars=document.getElementById("progressBars");
+  const deployBtn=document.getElementById("deployBtn");
+  log.innerText="";progressBars.innerHTML="";
+  if(!username||!repo||!token||files.length===0){alert("Lengkapi semua kolom dan pilih file/folder!");return;}
+  localStorage.setItem("github_token",token);
+  log.innerText="🚀 Mulai upload...\n";
+
+  for(const file of files){
+    const path=basePath?`${basePath}/${file.webkitRelativePath||file.name}`:(file.webkitRelativePath||file.name);
+    const content=await file.text();
+    const bar=document.createElement("progress");
+    bar.value=0;bar.max=100;
+    progressBars.appendChild(bar);
+    log.innerText+=`⏳ Upload ${path}...\n`;
+    bar.value=50;
+    const result=await uploadToGitHub(path,content,username,repo,token);
+    if(result.content){bar.value=100;log.innerText+=`✅ ${path} berhasil diupload.\n`;}
+    else{log.innerText+=`❌ Gagal: ${result.message}\n`;}
+  }
+  log.innerText+="\n✨ Upload selesai!";
+  deployBtn.classList.remove("hidden");
+}
+
+async function deployToPages(){
+  const username=document.getElementById("username").value.trim();
+  const repo=document.getElementById("repo").value.trim();
+  const token=document.getElementById("token").value.trim();
+  const log=document.getElementById("log");
+  const previewURL=document.getElementById("previewURL");
+  const url=`https://api.github.com/repos/${username}/${repo}/pages`;
+  const res=await fetch(url,{
+    method:"POST",
+    headers:{
+      "Authorization":`Bearer ${token}`,
+      "Accept":"application/vnd.github+json",
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({source:{branch:"main",path:"/"}})
+  });
+  if(res.ok){
+    const preview=`https://${username}.github.io/${repo}/`;
+    log.innerText+=`\n🌐 GitHub Pages diaktifkan!`;
+    previewURL.innerHTML=`<a class="link" href="${preview}" target="_blank"><i class="fa-solid fa-eye"></i> Lihat Halaman</a>`;
+  }else{
+    log.innerText+=`\n⚠️ Gagal mengaktifkan GitHub Pages.`;
+  }
+}
+
+document.getElementById("uploadBtn").addEventListener("click",uploadFile);
+document.getElementById("deployBtn").addEventListener("click",deployToPages);
+</script>
+</body>
+</html>
